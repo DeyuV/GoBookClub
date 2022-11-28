@@ -1,0 +1,41 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:14.1
+    container_name: "golang-DB-tmdbookclub"
+    command: -p 2022
+    ports:
+      - "2022:2022"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=22.dej
+      - POSTGRES_DB=tmdbookclub
+    networks:
+      - golangbackend_GoLangTMDbookClubAPI
+    volumes:
+      - database_postgres:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: "golang-api-tmdbookclub"
+    ports:
+      - "8080:8080"
+    environment:
+      - DIALECT=postgres
+      - HOST=localhost
+      - DBPORT=2022
+      - USER=postgres
+      - NAME=tmdbookclub
+      - PASSWORD=22.dej
+    expose:
+      - 8080
+    depends_on:
+      - db
+    networks:
+      - golangbackend_GoLangTMDbookClubAPI
+volumes:
+  database_postgres:
+
+networks:
+  golangbackend_GoLangTMDbookClubAPI:
+    driver: bridge
